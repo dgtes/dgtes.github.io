@@ -1,14 +1,51 @@
- <!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>dgtes.github.io</title>
+    <meta charset="UTF-8">
+    <title>Random‑Pixel Canvas</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #111;
+        }
+        canvas {
+            image-rendering: pixelated;
+        }
+    </style>
 </head>
 <body>
+    <canvas id="pixCanvas" width="800" height="600"></canvas>
 
-<h1>This is a Heading for dgtes.github.io</h1>
-<p>This is a paragraph.</p>
+    <script>
+        const canvas = document.getElementById('pixCanvas');
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        const imageData = ctx.createImageData(width, height);
+        const data = imageData.data; // Uint8ClampedArray
 
-<p>This is another paragraph</p>
+        function randomByte() {
+            return Math.floor(Math.random() * 256);
+        }
 
+        function drawFrame() {
+            // Assign a random RGB color to each pixel (alpha = 255)
+            for (let i = 0; i < data.length; i += 4) {
+                data[i]     = 255; // Red
+                data[i + 1] = 100; // Green
+                data[i + 2] = randomByte(); // Blue
+                data[i + 3] = 255;          // Alpha (opaque)
+            }
+            ctx.putImageData(imageData, 0, 0);
+            setTimeout(() => { requestAnimationFrame(drawFrame); } , 100);
+        }
+
+        // Start the animation loop
+        requestAnimationFrame(drawFrame);
+    </script>
 </body>
 </html>
