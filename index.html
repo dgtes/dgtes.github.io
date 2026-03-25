@@ -20,32 +20,50 @@
 <body>
     <canvas id="pixCanvas" width="800" height="600"></canvas>
 
-    <script>
+   <script>
         const canvas = document.getElementById('pixCanvas');
         const ctx = canvas.getContext('2d');
         const width = canvas.width;
         const height = canvas.height;
         const imageData = ctx.createImageData(width, height);
         const data = imageData.data; // Uint8ClampedArray
-
-        function randomByte() {
-            return Math.floor(Math.random() * 256);
+    
+        let points = [];
+        for (let i = 0; i < 30; i++) {
+            const x = Math.random() * width; 
+            const y = Math.random() * height; 
+            points.push({ x, y });
         }
-
+    
+        function pos(i) {
+            const x = Math.floor(i % width);
+            const y = Math.floor(i / width);
+            return { x, y };
+        }
+    
         function drawFrame() {
-            // Assign a random RGB color to each pixel (alpha = 255)
+
             for (let i = 0; i < data.length; i += 4) {
-                data[i]     = 255; // Red
-                data[i + 1] = 100; // Green
-                data[i + 2] = randomByte(); // Blue
-                data[i + 3] = 255;          // Alpha (opaque)
+                const { x, y } = pos(Math.floor(i/4));
+    
+                for (let j = 0; j < points.length; j++) {
+                    let pX = x - points[j].x;
+                    let pY = y - points[j].y;
+    
+                    if (pX * pX + pY * pY < (600)) {
+                        data[i]     = 200;   // Red
+                        data[i + 1] = 0; // Green
+                        data[i + 2] = 100; // Blue
+                        
+                    }
+                }
+                data[i + 3] = 255; // Alpha (opaque)
             }
             ctx.putImageData(imageData, 0, 0);
-            setTimeout(() => { requestAnimationFrame(drawFrame); } , 100);
+            //requestAnimationFrame(drawFrame);
         }
 
-        // Start the animation loop
-        requestAnimationFrame(drawFrame);
+        drawFrame();
     </script>
 </body>
 </html>
